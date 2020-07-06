@@ -22,21 +22,21 @@ def login_CEI(driver):
     botao_enviar = driver.find_element_by_name('ctl00$ContentPlaceHolder1$btnLogar')
 
     # Enviando valores
-    CPF.send_keys('#SEU CPF#')
-    senha.send_keys('#SUA SENHA#')
+    CPF.send_keys('SEU CPF')
+    senha.send_keys('SUA SENHA')
     botao_enviar.click()
-    driver.implicitly_wait(10)
+
 
 
 def buscando_carteira_atual():
     # Login
     # Instancia do WebDriver
-    driver = webdriver.Chrome('/home/alexjunior/Documentos/dashboard_acoes/chromedriver',
-                              options=options)
+    driver = webdriver.Chrome('/home/alexjunior/Documentos/dashboard_acoes/chromedriver')
 
     driver.get('https://cei.b3.com.br/CEI_Responsivo/')
     login_CEI(driver)
 
+    driver.implicitly_wait(10)
     # Passos até as tabelas
     driver.find_element_by_id('ctl00_ContentPlaceHolder1_sectionCarteiraAtivos').click()
     driver.find_element_by_id('ctl00_ContentPlaceHolder1_repTabelaAtivos_ctl04_LinkButton2').click()
@@ -60,11 +60,11 @@ def buscando_carteira_atual():
 
 
 def buscando_negociacoes():
-    driver = webdriver.Chrome('/home/alexjunior/Documentos/dashboard_acoes/chromedriver',
-                              options=options)
+    driver = webdriver.Chrome('/home/alexjunior/Documentos/dashboard_acoes/chromedriver')
 
     driver.get('https://cei.b3.com.br/CEI_Responsivo/')
     login_CEI(driver)
+    time.sleep(5)
     actions = ActionChains(driver)
 
     # Passos até as tabelas

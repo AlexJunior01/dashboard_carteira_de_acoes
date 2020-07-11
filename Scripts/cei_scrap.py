@@ -27,16 +27,14 @@ def login_CEI(driver):
     botao_enviar.click()
 
 
-
 def buscando_carteira_atual():
-    # Login
     # Instancia do WebDriver
     driver = webdriver.Chrome('/home/alexjunior/Documentos/dashboard_acoes/chromedriver')
 
     driver.get('https://cei.b3.com.br/CEI_Responsivo/')
     login_CEI(driver)
-
     driver.implicitly_wait(10)
+
     # Passos até as tabelas
     driver.find_element_by_id('ctl00_ContentPlaceHolder1_sectionCarteiraAtivos').click()
     driver.find_element_by_id('ctl00_ContentPlaceHolder1_repTabelaAtivos_ctl04_LinkButton2').click()
@@ -64,22 +62,27 @@ def buscando_negociacoes():
 
     driver.get('https://cei.b3.com.br/CEI_Responsivo/')
     login_CEI(driver)
-    time.sleep(5)
+    driver.implicitly_wait(10)
     actions = ActionChains(driver)
 
     # Passos até as tabelas
-
     extratos = driver.find_element_by_xpath('//div[@id="nav"]/div/nav/section/ul/li[4]')
     actions.move_to_element(extratos).perform()
 
     negociacoes = driver.find_element_by_link_text('Negociação de ativos')
     actions.move_to_element(negociacoes)
     actions.click().perform()
-
-
     time.sleep(3)
+
+
+
+    # quantidade de corretoras
+    contas = Select(driver.find_element_by_id('ctl00_ContentPlaceHolder1_ddlAgentes'))
+    qtd_options = len(contas.options)
+
+    #Pegando as tabelas
     negociacao = pd.DataFrame()
-    for i in range(1, 3):
+    for i in range(1, qtd_options):
         consultar = driver.find_element_by_id('ctl00_ContentPlaceHolder1_btnConsultar')
         contas = Select(driver.find_element_by_id('ctl00_ContentPlaceHolder1_ddlAgentes'))
         contas.select_by_index(i)
@@ -97,5 +100,6 @@ def buscando_negociacoes():
         driver.find_element_by_id('ctl00_ContentPlaceHolder1_btnConsultar').click()
         time.sleep(2)
     driver.quit()
+
     negociacao = manutencao_dados.ajuste_negociacoes(negociacao)
     negociacao.to_csv('datasets/negociacoes.csv', index=False)

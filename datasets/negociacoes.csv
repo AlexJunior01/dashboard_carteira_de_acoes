@@ -13,8 +13,8 @@ Data do Negócio,Compra/Venda,Mercado,Prazo/Vencimento,Código Negociação,Espe
 2020-03-19,C,Merc. Fracionário,,ITSA4,ITAUSA PN N1,18.0,8.49,152.82,1.0
 2020-03-19,C,Merc. Fracionário,,TRPL4,TRAN PAULISTPN N1,46.0,17.19,790.74,1.0
 2020-03-19,C,Mercado a Vista,,BBPO11,FII BB PRGIICI,7.0,115.91,811.37,1.0
-2020-03-23,C,Mercado a Vista,,BCFF11,FII BC FFII CI,14.0,68.0,952.0,1.0
 2020-03-23,C,Mercado a Vista,,BCFF11,FII BC FFII CI,3.0,63.97,191.91,1.0
+2020-03-23,C,Mercado a Vista,,BCFF11,FII BC FFII CI,14.0,68.0,952.0,1.0
 2020-04-15,C,Merc. Fracionário,,ITSA4,ITAUSA PN N1,44.0,9.51,418.44,1.0
 2020-04-15,C,Mercado a Vista,,BBPO11,FII BB PRGIICI,1.0,139.96,139.96,1.0
 2020-05-11,C,Mercado a Vista,,TAEE4,TAESA PN ED N2,100.0,8.92,892.0,1.0
@@ -34,3 +34,4 @@ Data do Negócio,Compra/Venda,Mercado,Prazo/Vencimento,Código Negociação,Espe
 2020-06-08,C,Merc. Fracionário,,BBAS3,BRASIL ON NM,1.0,36.7,36.7,1.0
 2020-06-17,C,Mercado a Vista,,BCFF11,FII BC FFII CI,1.0,90.98,90.98,1.0
 2020-06-18,C,Merc. Fracionário,,BBAS3,BRASIL ON NM,22.0,34.76,764.7199999999999,1.0
+2020-07-08,C,Mercado a Vista,,BCFF11,FII BC FFII CI ER,8.0,90.43,723.44,1.0

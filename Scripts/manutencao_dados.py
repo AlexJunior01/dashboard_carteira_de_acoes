@@ -1,7 +1,7 @@
 import pandas as pd
 from pandas_datareader import data as web
 
-# Script ajusta os dados após retirados do CEI
+
 def ajuste_carteira_atual(carteira_atual):
     # Tirandos valores nulos do dataset
     carteira_atual.dropna(inplace=True)
@@ -51,7 +51,6 @@ def ajuste_negociacoes(negociacoes):
     return negociacoes
 
 
-# Pegar cotações até o dia atual
 def pegar_cotacoes(codigos, data_atualizacao):
     # Pegar cotações no Yahoo Finance
     cotacoes = dict()
@@ -67,25 +66,15 @@ def pegar_cotacoes(codigos, data_atualizacao):
     return df_cotacoes
 
 
-
 def crescimento_do_patrimonio():
-    try:
-        arq = open('datasets/data_atualizacao.txt', 'r')
-    except FileNotFoundError:
-        data_inicio_da_carteira()
-        crescimento_do_patrimonio()
+    data_atualizacao = data_inicio_da_carteira()
 
-    # Data da ultima atualização
-    data_atualizacao = arq.read()
-    arq.close()
-
-    # Pegar códigos que possui
+    # Pegar códigos da carteir
     negociacoes = pd.read_csv('datasets/negociacoes.csv')
     codigos = negociacoes['Código Negociação'].unique()
 
-    # Pegando cotações atuais
+    # Pegando cotações do Yahoo Finance
     cotacoes = pegar_cotacoes(codigos, data_atualizacao)
-    #cotacoes.to_csv('datasets/cotacoes.csv', index=False)
 
     data_negocios = cotacoes.index
 
@@ -97,7 +86,6 @@ def crescimento_do_patrimonio():
     patrimonio['Valor Aplicado'] = valor_aplicado
 
     patrimonio.to_csv('datasets/crescimento_patrimonio.csv')
-
 
 
 def quantidade_cotas(codigos, data_negocios, negociacoes):
@@ -153,14 +141,9 @@ def pegar_valor_aplicado(data_negocios, negociacoes):
     return valor_aplicado
 
 
-
 def data_inicio_da_carteira():
     negociacoes = pd.read_csv('datasets/negociacoes.csv')
     data_atualizacao = negociacoes['Data do Negócio']
     data_atualizacao = data_atualizacao[0]
-
-    arq = open('datasets/data_atualizacao.txt', 'w')
-    arq.write(data_atualizacao)
-    arq.close()
-
+    return data_atualizacao
 

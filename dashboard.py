@@ -5,7 +5,7 @@ import datetime
 import plotly.graph_objects as go
 # pylint: disable=E1120
 
-
+# Carregamento dos Dados
 @st.cache
 def carregar_carteira_atual(caminho_do_arquivo):
   carteira_atual = pd.read_csv(caminho_do_arquivo)
@@ -26,10 +26,76 @@ def carregar_patrimonio(caminho_do_arquivo):
 
 
 def ultima_atualizacao():
-    arq_data = open('datasets/data_atualizacao.txt', 'r')
+    arq_data = open('data_atualizacao.txt', 'r')
     data_atualizacao = arq_data.read()
     data_atualizacao = datetime.datetime.strptime(data_atualizacao, '%Y-%m-%d')
     return data_atualizacao
+
+
+# Gráficos
+def grafico_carteira_atual_por_acao(carteira_atual):
+    plot_acoes = px.pie(data_frame=carteira_atual, names='Cód. de Negociação',
+                            values='Valor (R$)',
+                            color_discrete_sequence=px.colors.cmocean.balance,
+                            hover_name='Cód. de Negociação',
+                            width=800, height=400)
+    plot_acoes.update_traces(textfont={"size": 15}, overwrite=True)
+    return plot_acoes
+
+
+def grafico_carteira_atual_por_tipo(carteira_atual):
+    plot = px.pie(data_frame=carteira_atual, names='Classe',
+                             values='Valor (R$)',
+                             color_discrete_sequence=px.colors.cmocean.balance)
+    return plot
+
+
+def grafico_rendimento_mensal(rendimentos, label):
+    plot = px.bar(data_filtrada, x='mes_pagamento', y='total', color='ativo',
+                                 labels= label, hover_data=['tipo'], width=800,
+                                 hover_name='ativo',
+                                 text='total')
+
+    return plot
+
+
+def grafico_rendimento_por_ativo(rendimentos, label):
+    plot = px.bar(rendimentos, x='ativo', y='total', color='ativo', width=800,
+                  height=400, labels=label)
+    plot.update_layout(barmode='stack', xaxis={'categoryorder':'total ascending'},
+                       overwrite=True)
+
+    return plot
+
+
+def grafico_crescimento_patrimonial(patrimonio):
+    fig = go.Figure(go.Scatter(x=patrimonio['Date'],
+                          y=patrimonio['Valor Aplicado'],
+                          name='Valor Aplicado',
+                          line_shape='spline',
+                          fill='tozeroy'))
+
+    fig.add_trace(go.Scatter(x=patrimonio['Date'],
+                             y=patrimonio['Total'],
+                             name='Total',
+                             line_shape='spline',
+                             fill='tozeroy'))
+
+    fig.update_xaxes(rangeslider_visible=True)
+    fig.update_xaxes(rangeselector=dict(
+                        buttons=list([
+                            dict(count=1, label="1m", step="month", stepmode="backward"),
+                            dict(count=3, label='3m', step='month', stepmode='backward'),
+                            dict(count=1, label="1y", step="year", stepmode="backward"),
+                            dict(step="all")
+                        ])
+                    )
+    )
+    fig.update_layout({'height': 600, 'width': 900})
+
+    return fig
+
+
 
 
 # Arquivos utilizados
@@ -54,19 +120,12 @@ if option == 'Carteira Atual':
 
     # Por ativo
     if tipo_carteira_atual == 'Por ação':
-        plot_acoes = px.pie(data_frame=carteira_atual, names='Cód. de Negociação',
-                            values='Valor (R$)',
-                            color_discrete_sequence=px.colors.cmocean.balance,
-                            hover_name='Cód. de Negociação',
-                            width=800, height=400)
-        plot_acoes.update_traces(textfont={"size": 15}, overwrite=True)
+        plot_acoes = grafico_carteira_atual_por_acao(carteira_atual)
         st.plotly_chart(plot_acoes)
 
     # Por classe de ativo
     elif tipo_carteira_atual == 'Por classe de ativo':
-        plot_classe = px.pie(data_frame=carteira_atual, names='Classe',
-                             values='Valor (R$)',
-                             color_discrete_sequence=px.colors.cmocean.balance)
+        plot_classe = grafico_carteira_atual_por_tipo(carteira_atual)
         st.plotly_chart(plot_classe)
 
     if st.checkbox('Mostrar tabela'):
@@ -89,17 +148,12 @@ elif option == 'Rendimentos Mensais':
              'mes_pagamento': 'Mês do Pagamento'}
 
     # Rendimento mensal
-    plot_rend_mensal = px.bar(data_filtrada, x='mes_pagamento', y='total', color='ativo',
-                              labels= label, hover_data=['tipo'], width=800, hover_name='ativo',
-                              text='total')
+    plot_rend_mensal = grafico_rendimento_mensal(rendimentos, label)
     st.plotly_chart(plot_rend_mensal)
 
     # Rendimento por ativo
     st.title('Rendimentos por Ativo')
-    plot = px.bar(rendimentos, x='ativo', y='total', color='ativo', width=800,
-                  height=400, labels=label)
-    plot.update_layout(barmode='stack', xaxis={'categoryorder':'total ascending'},
-                       overwrite=True)
+    plot = grafico_rendimento_por_ativo(rendimentos, label)
     st.plotly_chart(plot)
 
     if st.checkbox('Mostrar tabela'):
@@ -107,30 +161,6 @@ elif option == 'Rendimentos Mensais':
 
 elif option == 'Crescimento Patrimonial':
     st.title(body='Crescimento Patrimonial')
-    fig = fig = go.Figure(go.Scatter(x=patrimonio['Date'],
-                          y=patrimonio['Valor Aplicado'],
-                          name='Valor Aplicado',
-                          line_shape='spline',
-                          fill='tozeroy'))
 
-    fig.add_trace(go.Scatter(x=patrimonio['Date'],
-                             y=patrimonio['Total'],
-                             name='Total',
-                             line_shape='spline',
-                             fill='tozeroy'))
-
-    fig.update_xaxes(rangeslider_visible=True)
-    fig.update_xaxes(rangeselector=dict(
-                        buttons=list([
-                            dict(count=1, label="1m", step="month", stepmode="backward"),
-                            dict(count=3, label='3m', step='month', stepmode='backward'),
-                            dict(count=1, label="1y", step="year", stepmode="backward"),
-                            dict(step="all")
-                        ])
-                    )
-    )
-    fig.update_layout({'height': 600, 'width': 900})
-
+    fig = grafico_crescimento_patrimonial(patrimonio)
     st.plotly_chart(fig)
-
-    st.write(patrimonio)

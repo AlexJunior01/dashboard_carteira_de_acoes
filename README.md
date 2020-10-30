@@ -57,3 +57,10 @@ Por último mas não menos importante, o crescimento patrimonial, mostra uma vis
 
 5. Executar o Dashboard.
     >`streamlit run dashboard.py`
+
+
+## Próximos updates:
+
+* Melhorar a qualidade dos gráficos e mostar mais informações relevantes neles;
+* Adicionar a opção de inserir novas negociações e rendimentos através do dashboard;
+* Criar um botão para atualizar os dados com pegando as informarções do CEI.

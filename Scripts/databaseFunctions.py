@@ -152,6 +152,14 @@ def createTables():
         "PRIMARY KEY (id_provento))"
     )
 
+    TABLES['carteira'] = (
+        "CREATE TABLE `carteira` ("
+	    "`codigo` varchar(10) not null,"
+        "`categoria` varchar(20) not null,"
+        "`quantidade` float,"
+        "primary key(codigo));"
+    )
+
     connection, cursor = connectDB()
 
     for table_name in TABLES:
@@ -169,5 +177,58 @@ def createTables():
         else:
             print("OK")
 
+    closeDB(connection, cursor)
+
+
+def triggerDeletarNegociacao():
+    connection, cursor = connectDB()
+
+    cursor.execute(" drop trigger if exists tg_apagar_negociacao;")
+
+    query = (
+    """CREATE TRIGGER tg_apagar_negociacao BEFORE DELETE ON negociacao
+	FOR EACH ROW
+	BEGIN
+		IF OLD.tipo = 'C' THEN
+			UPDATE carteira SET quantidade = quantidade - OLD.quantidade WHERE codigo = OLD.codigo;
+		ELSE
+			UPDATE carteira SET quantidade = quantidade + OLD.quantidade WHERE codigo = OLD.codigo;
+        END IF;
+
+        IF (SELECT quantidade FROM carteira WHERE codigo = OLD.codigo) < 1 THEN
+			DELETE FROM carteira WHERE codigo = OLD.codigo;
+		END IF;
+    END; """)
+
+    cursor.execute(query)
+    connection.commit()
+    closeDB(connection, cursor)
+
+
+def triggerNovaNegociação():
+    connection, cursor = connectDB()
+
+    cursor.execute(" drop trigger if exists tg_nova_negociacao")
+    query = (
+    """CREATE TRIGGER tg_nova_negociacao AFTER INSERT ON negociacao
+	FOR EACH ROW
+	BEGIN
+		IF (SELECT codigo FROM carteira WHERE codigo = NEW.codigo) IS NULL THEN
+			INSERT INTO carteira (codigo, categoria, quantidade) VALUES (NEW.codigo, NEW.categoria, NEW.quantidade);
+		ELSE
+			IF NEW.tipo = 'C' THEN
+				UPDATE carteira SET quantidade = quantidade + NEW.quantidade WHERE codigo = NEW.codigo;
+			ELSE
+				UPDATE carteira SET quantidade = quantidade - NEW.quantidade WHERE codigo = NEW.codigo;
+			END IF;
+
+			IF (SELECT quantidade FROM carteira WHERE codigo = NEW.codigo) = 0 THEN
+				DELETE FROM carteira WHERE codigo = NEW.codigo;
+			END IF;
+		END IF;
+	END; """)
+
+    cursor.execute(query)
+    connection.commit()
     closeDB(connection, cursor)
 

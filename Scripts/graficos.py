@@ -21,3 +21,15 @@ def graficoProventos(proventos):
                             showarrow=False,
                             yshift=5)
     return plot
+
+
+
+
+def graficoCarteiraAtual(carteira_atual):
+    plot_acoes = px.pie(data_frame=carteira_atual, names='codigo',
+                            values='valor_total',
+                            color_discrete_sequence=px.colors.cmocean.balance,
+                            hover_name='codigo',
+                            width=800, height=400)
+    plot_acoes.update_traces(textfont={"size": 15}, overwrite=True)
+    return plot_acoes

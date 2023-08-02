@@ -1,0 +1,15 @@
+data_pagamento,ativo,tipo,valor_por_cota,quantidade_de_cotas,total
+2020-03-13,BBPO11,Rendimentos,,5,6.28
+2020-03-13,BCFF11,Rendimentos,,13,6.89
+2020-04-15,HGLG11,Rendimentos,,2,1.56
+2020-04-15,BBPO11,Rendimentos,,17,17.98
+2020-04-15,BCFF11,Rendimentos,,30,12.0
+2020-04-29,TRPL4,JCP,,46,8.92
+2020-05-15,HGLG11,Rendimentos,,2,1.56
+2020-05-15,BBPO11,Rendimentos,,18,19.04
+2020-05-15,BCFF11,Rendimentos,,30,12.0
+2020-05-28,TAEE4,Dividendos,,114,19.9
+2020-05-28,TAEE4,JCP,,114,5.74
+2020-06-12,HGLG11,Rendimentos,,2,1.56
+2020-06-15,BBPO11,Rendimentos,,18,19.04
+2020-06-15,BCFF11,Rendimentos,,30,12.0

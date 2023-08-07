@@ -3,11 +3,10 @@ from Scripts import manutencao_dados
 import datetime
 
 print('Atualizando...\nTempo estimado 20 segundos')
-try:
-    cei_scrap.buscando_carteira_atual()
-    cei_scrap.buscando_negociacoes()
-except NoSuchElementException:
-    print("Falha na conexão com CEI")
+
+cei_scrap.buscando_carteira_atual()
+cei_scrap.buscando_negociacoes()
+
 
 manutencao_dados.crescimento_do_patrimonio()
 

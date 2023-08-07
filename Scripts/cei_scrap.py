@@ -1,19 +1,20 @@
-# Navegar pela página
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
-# Parsear HTML
 from bs4 import BeautifulSoup
-
 import pandas as pd
 import time
 from Scripts import manutencao_dados
 
-# Configuracoes para script fazer sem aparecer
+# Configuracoes pdo driver
 options = Options()
 options.headless = True
 options.add_argument("--window-size=1366,768")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-dev-shm-using")
+options.add_argument("--remote-debugging-port=9222")
 
 def login_CEI(driver):
     # Selecionando campos
@@ -22,14 +23,14 @@ def login_CEI(driver):
     botao_enviar = driver.find_element_by_name('ctl00$ContentPlaceHolder1$btnLogar')
 
     # Enviando valores
-    CPF.send_keys('SEU CPF')
-    senha.send_keys('SUA SENHA')
+    CPF.send_keys('40368554848')
+    senha.send_keys('f$IrDcfzO3hX!X95')
     botao_enviar.click()
 
 
 def buscando_carteira_atual():
     # Instancia do WebDriver
-    driver = webdriver.Chrome('/home/alexjunior/Documentos/dashboard_acoes/chromedriver')
+    driver = webdriver.Chrome('./chromedriver', chrome_options=options)
 
     driver.get('https://cei.b3.com.br/CEI_Responsivo/')
     login_CEI(driver)
@@ -58,7 +59,7 @@ def buscando_carteira_atual():
 
 
 def buscando_negociacoes():
-    driver = webdriver.Chrome('/home/alexjunior/Documentos/dashboard_acoes/chromedriver')
+    driver = webdriver.Chrome('./chromedriver', chrome_options=options)
 
     driver.get('https://cei.b3.com.br/CEI_Responsivo/')
     login_CEI(driver)
@@ -79,15 +80,17 @@ def buscando_negociacoes():
     # quantidade de corretoras
     contas = Select(driver.find_element_by_id('ctl00_ContentPlaceHolder1_ddlAgentes'))
     qtd_options = len(contas.options)
-
     #Pegando as tabelas
     negociacao = pd.DataFrame()
     for i in range(1, qtd_options):
-        consultar = driver.find_element_by_id('ctl00_ContentPlaceHolder1_btnConsultar')
         contas = Select(driver.find_element_by_id('ctl00_ContentPlaceHolder1_ddlAgentes'))
         contas.select_by_index(i)
+        time.sleep(2)
+
+        consultar = driver.find_element_by_id('ctl00_ContentPlaceHolder1_btnConsultar')
         consultar.click()
         time.sleep(2)
+
         content = driver.page_source
         soup = BeautifulSoup(content, 'html.parser')
 
@@ -97,8 +100,10 @@ def buscando_negociacoes():
         temp = pd.read_html(table)[0]
         negociacao = pd.concat([negociacao, temp])
 
-        driver.find_element_by_id('ctl00_ContentPlaceHolder1_btnConsultar').click()
+
+        driver.find_element_by_id('ctl00_ContentPlaceHolder1_btnConsultar')
         time.sleep(2)
+        driver.refresh()
     driver.quit()
 
     negociacao = manutencao_dados.ajuste_negociacoes(negociacao)

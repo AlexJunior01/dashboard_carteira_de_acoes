@@ -1,5 +1,5 @@
 import pandas as pd
-from pandas_datareader import data as web
+import yfinance as yf
 
 
 def ajuste_carteira_atual(carteira_atual):
@@ -52,14 +52,17 @@ def ajuste_negociacoes(negociacoes):
 
 
 def pegar_cotacoes(codigos, data_atualizacao):
-    # Pegar cotações no Yahoo Finance
+    # Futuro DF
     cotacoes = dict()
     for codigo in codigos:
         cotacoes[codigo] = 0
 
     for codigo in codigos:
-        cotacao = web.DataReader(name=codigo+'.SA', data_source='yahoo', start=data_atualizacao)['Close']
-        cotacoes[codigo] = cotacao.copy()
+        # Todas informações do ticker com yfinance
+        ticker = yf.Ticker(codigo+'.SA')
+        # Histórico de preços do ativo
+        cotacao_ativo = ticker.history(start=data_atualizacao)['Close']
+        cotacoes[codigo] = cotacao_ativo.copy().round(2)
 
     df_cotacoes = pd.DataFrame(cotacoes)
     df_cotacoes.fillna(method='ffill', axis='rows', inplace=True)

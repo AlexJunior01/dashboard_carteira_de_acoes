@@ -23,8 +23,8 @@ def login_CEI(driver):
     botao_enviar = driver.find_element_by_name('ctl00$ContentPlaceHolder1$btnLogar')
 
     # Enviando valores
-    CPF.send_keys('40368554848')
-    senha.send_keys('f$IrDcfzO3hX!X95')
+    CPF.send_keys('SEU CPF')
+    senha.send_keys('SUA SENHA')
     botao_enviar.click()
 
 

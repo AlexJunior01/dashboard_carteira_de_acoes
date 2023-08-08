@@ -1,4 +1,4 @@
-[![author](https://img.shields.io/badge/author-AlexJunior-yellow.svg)](https://www.linkedin.com/in/alex-sandro-momi-junior-382bb8157/) [![](https://img.shields.io/badge/python-3.7+-yellow.svg)](https://www.python.org/downloads/release/python-365/) [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-yellow.svg)](http://perso.crans.org/besson/LICENSE.html)
+[![author](https://img.shields.io/badge/author-AlexJunior-yellow.svg)](https://www.linkedin.com/in/alex-sandro-momi-junior-382bb8157/) [![](https://img.shields.io/badge/python-3.6-yellow.svg)](https://www.python.org/downloads/release/python-365/) [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-yellow.svg)](http://perso.crans.org/besson/LICENSE.html)
 
 # Dashboard de carteira de investimentos
 Para possuir um melhor entendimento sobre a situação dos meus investimentos e poder tomar decisões mais assertivas elaborei o Dashboard. O Dashboard consiste em uma plataforma para acompanhar minha carteira de investimentos, que possui ativos em diversas corretoras, em um lugar só, disponibilizando uma visão geral da distribuição da carteira, rendimentos recebidos e do crescimento patrimonial.

@@ -27,17 +27,23 @@ def closeDB(connection, cursor):
         connection.close()
 
 
-def novaNegociacao(data_negociacao, tipo, codigo, quantidade, preco):
-    if tipo == 'Compra':
-        tipo = 'c'
-    else:
-        tipo = 'v'
+def novaNegociacao(categoria, data_negociacao, tipo, codigo, quantidade, preco):
 
+    # Pré processamento dos dados
+    if tipo == 'Compra':
+        tipo = 'C'
+    else:
+        tipo = 'V'
+
+    quantidade = float(quantidade)
+    preco = float(preco)
+
+    # Lançando para o BD
     connection, cursor = connectDB()
     query =("INSERT INTO negociacao"
-            "(data_negociacao, codigo, tipo, quantidade, preco)"
-            "VALUES(%s, %s, %s, %s, %s)")
-    data = (data_negociacao, codigo, tipo, quantidade, preco)
+            "(categoria, data_negociacao, codigo, tipo, quantidade, preco, total)"
+            "VALUES(%s, %s, %s, %s, %s, %s, %s)")
+    data = (categoria, data_negociacao, codigo, tipo, quantidade, preco, quantidade*preco)
 
     cursor.execute(query, data)
     connection.commit()
@@ -66,7 +72,8 @@ def recuperarNegociacao():
 
     rows = cursor.fetchall()
     df = pd.DataFrame([[ij for ij in i] for i in rows])
-    df.columns = ['data_negociacao', 'codigo', 'tipo', 'quantidade', 'valor_bruto']
+    df.columns = ['id_negociacao', 'categoria', 'data_negociacao',
+                 'codigo', 'tipo', 'quantidade', 'valor_bruto', 'total']
 
     closeDB(connection, cursor)
     return df
@@ -79,38 +86,70 @@ def recuperarProvento():
 
     rows = cursor.fetchall()
     df = pd.DataFrame([[ij for ij in i] for i in rows])
-    df.columns = ['data_pagamento', 'codigo', 'tipo', 'quantidade_base', 'valor_bruto']
+    df.columns = ['id_provento','data_pagamento', 'codigo', 'tipo', 'quantidade_base', 'valor_bruto']
 
     closeDB(connection, cursor)
 
+    #Mês pagamento
     df['data_pagamento'] = pd.to_datetime(df['data_pagamento'])
     mes_pag = []
     for data in  df['data_pagamento']:
         mes = datetime.datetime(data.year, data.month, 1)
         mes_pag.append(mes)
-
     df['mes_pagamento'] = mes_pag
+
+    #Conversão dos tipos
+    df['valor_bruto'] = df['valor_bruto'].astype(str).astype(float)
     return df
+
+
+def excluirNegociacao(id_negociacao):
+    connection, cursor = connectDB()
+
+    query = "DELETE FROM negociacao WHERE id_negociacao = %s;"
+
+    cursor.execute(query, (id_negociacao,))
+    connection.commit()
+
+    closeDB(connection, cursor)
+
+
+def excluirProvento(id_provento):
+    connection, cursor = connectDB()
+
+    query = "DELETE FROM provento WHERE id_provento = %s"
+
+
+    cursor.execute(query, (id_provento,))
+    connection.commit()
+
+    closeDB(connection, cursor)
 
 
 def createTables():
     TABLES = {}
     TABLES['negociacao'] = (
         "CREATE TABLE `negociacao` ("
+        "`id_negociacao` int AUTO_INCREMENT,"
+        "`categoria` varchar(20),"
         "`data_negociacao` date NOT NULL,"
         "`codigo` varchar(10) NOT NULL,"
         "`tipo` char NOT NULL,"
-        "`quantidade` int(10) NOT NULL,"
-        "`preco` DECIMAL(8,2))"
+        "`quantidade` float(10) NOT NULL,"
+        "`preco` DOUBLE(20,4) NOT NULL,"
+        "`total` DOUBLE(20,4) NOT NULL,"
+        "PRIMARY KEY (id_negociacao))"
     )
 
     TABLES['provento'] = (
         "CREATE TABLE `provento` ("
+        "`id_provento` int AUTO_INCREMENT,"
         "`data_pagamento` date NOT NULL,"
         "`codigo` varchar(10) NOT NULL,"
-        "`tipo` varchar(10) NOT NULL,"
+        "`tipo` varchar(15) NOT NULL,"
         "`quantidade_base` int(10) NOT NULL,"
-        "`valor_bruto` DECIMAL(8,2))"
+        "`valor_bruto` double(20,4) NOT NULL,"
+        "PRIMARY KEY (id_provento))"
     )
 
     connection, cursor = connectDB()
@@ -131,3 +170,4 @@ def createTables():
             print("OK")
 
     closeDB(connection, cursor)
+

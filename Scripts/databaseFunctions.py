@@ -4,6 +4,7 @@ from mysql.connector import errorcode
 import pandas as pd
 import datetime
 
+
 def connectDB():
     try:
         connection = mysql.connector.connect(host='localhost',
@@ -100,6 +101,19 @@ def recuperarProvento():
 
     #Conversão dos tipos
     df['valor_bruto'] = df['valor_bruto'].astype(str).astype(float)
+    return df
+
+
+def recuperarCarteiraAtual():
+    connection, cursor = connectDB()
+    query = ("SELECT * FROM carteira")
+    cursor.execute(query)
+
+    rows = cursor.fetchall()
+    df = pd.DataFrame([[ij for ij in i] for i in rows])
+    df.columns = ['codigo', 'categoria', 'quantidade']
+
+    closeDB(connection, cursor)
     return df
 
 

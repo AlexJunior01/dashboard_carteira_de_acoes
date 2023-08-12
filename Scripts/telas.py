@@ -1,7 +1,7 @@
 import tkinter
 from tkinter import ttk
 from tkinter import messagebox
-import databaseFunctions as db_func
+import Scripts.databaseFunctions as db_func
 
 import sys
 import os

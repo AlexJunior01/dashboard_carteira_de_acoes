@@ -26,9 +26,9 @@ def carregar_patrimonio(caminho_do_arquivo):
 
 
 def ultima_atualizacao():
-    arq_data = open('data_atualizacao.txt', 'r')
-    data_atualizacao = arq_data.read()
-    data_atualizacao = datetime.datetime.strptime(data_atualizacao, '%Y-%m-%d')
+    with open('data_atualizacao.in', 'r') as arq_data:
+        data_atualizacao = arq_data.readline().strip()
+        data_atualizacao = datetime.datetime.strptime(data_atualizacao, '%Y-%m-%d')
     return data_atualizacao
 
 

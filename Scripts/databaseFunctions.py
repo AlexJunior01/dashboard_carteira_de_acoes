@@ -8,18 +8,18 @@ import datetime
 def connectDB():
     try:
         connection = mysql.connector.connect(host='localhost',
-                                            database='Investimentos',
-                                            user='root',
-                                            password='alexalex')
+                                             database='investimentos',
+                                             user='root',
+                                             password='test')
 
         if connection.is_connected():
             cursor = connection.cursor(buffered=True)
             cursor.execute("select database();")
 
+        return connection, cursor
+
     except Error as e:
         print('Erro while connecting to MySQL', e)
-
-    return connection, cursor
 
 
 def closeDB(connection, cursor):

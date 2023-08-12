@@ -1,23 +1,25 @@
 [![author](https://img.shields.io/badge/author-AlexJunior-yellow.svg)](https://www.linkedin.com/in/alex-sandro-momi-junior-382bb8157/) [![](https://img.shields.io/badge/python-3.6-yellow.svg)](https://www.python.org/downloads/release/python-365/) [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-yellow.svg)](http://perso.crans.org/besson/LICENSE.html)
 
 # NOTICE:
-    Documentation out of date, will update once new version with MySQL is complete.
+    Documentation is currently out of date, will be updated once the new version with MySQL is complete.
 
-# Investment portfolio dashboard
-To have a better understanding of the situation of my investments and be able to make more assertive decisions, I created this Dashboard.
+# Investment Portfolio Dashboard
+To gain a better understanding of my investments and make more assertive decisions, I created this Dashboard.
 
-The Dashboard consists of a platform to monitor my investment portfolio, which has assets in several brokerages, in one place. Providing an overview of portfolio distribution, income received, and equity growth.
+This Dashboard is a platform for monitoring my investment portfolio, which comprises assets in several brokerages,
+all in one place. It provides an overview of portfolio distribution, income received, and equity growth.
 
 ## Features:
-### Current portfolio distribution
+### Current Portfolio Distribution
 The first feature of the Dashboard is to simply and objectively show the current distribution of the investment portfolio.
 It shows the distribution from two different optics:
 
-* **By asset:** demonstrating the participation of each asset in your portfolio, providing a view of where your largest
-positions are concentrated.
+* **By Asset:** Showcasing each asset's share in your portfolio, offering a view of where your largest positions are
+concentrated.
 <img src="img/carteira_atual_por_acao.png">
 
-* **By asset class:** shows portfolio distribution across asset classes, enabling better analysis of your investment strategy.
+* **By asset class:** Displaying the distribution of the portfolio across asset classes, which aids in better analysis
+of your investment strategy.
 <img src="img/carteira_atual_por_classe.png">
 
 ### Returns
@@ -79,6 +81,6 @@ _dashboards_, and I imagine you can tell by looking at the project. I would be s
 
 
 ## Next Steps:
-Improve the quality of the charts and display more relevant information in them;
-Add the option to insert new trades and yields through the dashboard;
-Create a button to update the data by fetching information from the CEI.
+* Improve the quality of the charts and display more relevant information in them;
+* Add the option to insert new trades and yields through the dashboard;
+* Create a button to update the data by fetching information from the CEI.

@@ -10,7 +10,7 @@ from Scripts.database import (
 from Scripts import telas, graficos
 
 @st.cache
-def pegarCotacoes():
+def pegar_cotacoes():
     temp = recuperar_carteira_atual()
     codigos = temp["codigo"]
     cotacoes = []
@@ -31,7 +31,7 @@ sidebar = st.sidebar
 grafico = sidebar.selectbox(label='Opções', options=['Carteira Atual', 'Proventos'])
 negociacoes = recuperar_negociacao()
 proventos = recuperar_provento()
-carteira_atual = pegarCotacoes()
+carteira_atual = pegar_cotacoes()
 
 
 if grafico == 'Proventos':
@@ -47,7 +47,7 @@ if grafico == 'Proventos':
     if btn_excluir_provento:
         telas.confirmar_exclusao_provento(excluir_provento)
 
-    grafico_provento = graficos.graficoProventos(proventos)
+    grafico_provento = graficos.grafico_proventos(proventos)
     st.plotly_chart(grafico_provento)
 
     if st.checkbox(label='Saw raw data'):
@@ -67,7 +67,7 @@ elif grafico == 'Carteira Atual':
         teste = int(input_excluir_negociacao)
         telas.confirmar_exclusao_negociacao(teste)
 
-    grafico_carteira = graficos.graficoCarteiraAtual(carteira_atual)
+    grafico_carteira = graficos.grafico_carteira_atual(carteira_atual)
     st.plotly_chart(grafico_carteira)
 
     if st.checkbox(label='See raw data'):

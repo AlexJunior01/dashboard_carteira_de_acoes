@@ -1,7 +1,7 @@
 import plotly.express as px
-import pandas as pd
 
-def graficoProventos(proventos):
+
+def grafico_proventos(proventos):
     valor_por_mes = proventos.groupby('mes_pagamento')
     somas = valor_por_mes.sum()['valor_bruto']
 
@@ -25,7 +25,7 @@ def graficoProventos(proventos):
 
 
 
-def graficoCarteiraAtual(carteira_atual):
+def grafico_carteira_atual(carteira_atual):
     plot_acoes = px.pie(data_frame=carteira_atual, names='codigo',
                             values='valor_total',
                             color_discrete_sequence=px.colors.cmocean.balance,

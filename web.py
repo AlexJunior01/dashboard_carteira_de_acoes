@@ -1,4 +1,5 @@
 import streamlit as st
+import yfinance as yf
 
 from Scripts.database import (
     recuperar_negociacao,
@@ -6,9 +7,7 @@ from Scripts.database import (
     recuperar_carteira_atual
 )
 
-from Scripts import telas
-from Scripts import graficos
-import yfinance as yf
+from Scripts import telas, graficos
 
 @st.cache
 def pegarCotacoes():
@@ -40,13 +39,13 @@ if grafico == 'Proventos':
 
     novo_provento = sidebar.button('Adicionar Provento')
     if novo_provento:
-        telas.windowsAddProvento()
+        telas.windows_add_provento()
 
     excluir_provento = sidebar.number_input('Id do provento', value=0,
                                              step=1)
     btn_excluir_provento = sidebar.button('Excluir Provento')
     if btn_excluir_provento:
-        telas.confirmarExclusaoProvento(excluir_provento)
+        telas.confirmar_exclusao_provento(excluir_provento)
 
     grafico_provento = graficos.graficoProventos(proventos)
     st.plotly_chart(grafico_provento)
@@ -59,14 +58,14 @@ elif grafico == 'Carteira Atual':
 
     nova_negociacao = sidebar.button('Adicionar Negociação')
     if nova_negociacao:
-        telas.windowsAddNegociacao()
+        telas.windows_add_negociacao()
 
     input_excluir_negociacao = sidebar.number_input('Id da negociacao', value=0,
                                              step=1)
     btn_excluir_negociacao = sidebar.button('Excluir Negociacao')
     if btn_excluir_negociacao:
         teste = int(input_excluir_negociacao)
-        telas.confirmarExclusaoNegociacao(teste)
+        telas.confirmar_exclusao_negociacao(teste)
 
     grafico_carteira = graficos.graficoCarteiraAtual(carteira_atual)
     st.plotly_chart(grafico_carteira)

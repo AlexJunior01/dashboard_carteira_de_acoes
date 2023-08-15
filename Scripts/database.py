@@ -1,8 +1,8 @@
-import mysql.connector
-from mysql.connector import Error
-from mysql.connector import errorcode
-import pandas as pd
 import datetime
+
+import mysql.connector
+from mysql.connector import Error, errorcode
+import pandas as pd
 
 
 def get_connection():

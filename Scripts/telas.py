@@ -1,18 +1,19 @@
+import os
+
 import tkinter
 from tkinter import ttk
 from tkinter import messagebox
+
 import Scripts.database as db_func
 
-import sys
-import os
 
 if os.environ.get('DISPLAY','') == '':
     os.environ.__setitem__('DISPLAY', ':0.0')
 
 
-def windowsAddNegociacao():
+def windows_add_negociacao():
 
-    def pegarNegociacao():
+    def pegar_negociacao():
         data_negociacao = data_entry.get()
         tipo = tipo_entry.get()
         codigo = cod_entry.get()
@@ -20,7 +21,7 @@ def windowsAddNegociacao():
         preco = preco_entry.get()
         categoria = categoria_entry.get()
 
-        msg = messagebox.showinfo('Mensagem', 'Negociação adicionada com sucesso')
+        _ = messagebox.showinfo('Mensagem', 'Negociação adicionada com sucesso')
 
         data_entry.delete(0, len(data_negociacao))
         tipo_entry.delete(0, len(tipo))
@@ -74,7 +75,7 @@ def windowsAddNegociacao():
     ttk.Label(frame, text="Preço").grid(column=1, row=6)
 
     # Adicionar no BD
-    btn = ttk.Button(frame, text='Adicionar', command=pegarNegociacao)
+    btn = ttk.Button(frame, text='Adicionar', command=pegar_negociacao)
     btn.grid(column=2, row=7)
 
     for child in frame.winfo_children():
@@ -83,15 +84,15 @@ def windowsAddNegociacao():
     root.mainloop()
 
 
-def windowsAddProvento():
-    def pegarProvento():
+def windows_add_provento():
+    def pegar_provento():
         data_pagamento = data_entry.get()
         codigo = cod_entry.get()
         tipo = tipo_entry.get()
         quantidade_base = qtd_entry.get()
         valor_bruto = valor_entry.get()
 
-        msg = messagebox.showinfo('Mensagem', 'Provento adicionado com sucesso')
+        _ = messagebox.showinfo('Mensagem', 'Provento adicionado com sucesso')
 
         data_entry.delete(0, len(data_pagamento))
         cod_entry.delete(0, len(codigo))
@@ -140,7 +141,7 @@ def windowsAddProvento():
 
 
     # Adicionar no BD
-    btn = ttk.Button(frame, text='Adicionar', command=pegarProvento)
+    btn = ttk.Button(frame, text='Adicionar', command=pegar_provento)
     btn.grid(column=2, row=6)
 
     for child in frame.winfo_children():
@@ -149,7 +150,7 @@ def windowsAddProvento():
     root.mainloop()
 
 
-def confirmarExclusaoNegociacao(id_negociacao):
+def confirmar_exclusao_negociacao(id_negociacao):
     root = tkinter.Tk()
 
     msg_box = messagebox.askquestion('Excluir Negociação',
@@ -160,9 +161,9 @@ def confirmarExclusaoNegociacao(id_negociacao):
         try:
             db_func.excluir_negociacao(id_negociacao)
         except:
-            msg = messagebox.showinfo('Erro na exclusão', 'Algo deu errado durante a operação :(')
+            _ = messagebox.showinfo('Erro na exclusão', 'Algo deu errado durante a operação :(')
         else:
-            msg = messagebox.showinfo('Negociação removida',
+            _ = messagebox.showinfo('Negociação removida',
                                 f'A negociacao {id_negociacao} foi removida com sucesso')
         finally:
             root.destroy()
@@ -172,7 +173,7 @@ def confirmarExclusaoNegociacao(id_negociacao):
     root.mainloop()
 
 
-def confirmarExclusaoProvento(id_provento):
+def confirmar_exclusao_provento(id_provento):
     root = tkinter.Tk()
 
     msg_box = messagebox.askquestion('Excluir Provento',
@@ -182,9 +183,9 @@ def confirmarExclusaoProvento(id_provento):
         try:
             db_func.excluir_provento(id_provento)
         except:
-            msg = messagebox.showinfo('Erro na exclusão', 'Algo deu errado durante a operação :(')
+            _ = messagebox.showinfo('Erro na exclusão', 'Algo deu errado durante a operação :(')
         else:
-            msg = messagebox.showinfo('Provento removido',
+            _ = messagebox.showinfo('Provento removido',
                                 f'A provento {id_provento} foi removida com sucesso')
         finally:
             root.destroy()

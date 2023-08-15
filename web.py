@@ -1,12 +1,18 @@
 import streamlit as st
+
+from Scripts.database import (
+    recuperar_negociacao,
+    recuperar_provento,
+    recuperar_carteira_atual
+)
+
 from Scripts import telas
-from Scripts import databaseFunctions
 from Scripts import graficos
 import yfinance as yf
 
 @st.cache
 def pegarCotacoes():
-    temp = databaseFunctions.recuperarCarteiraAtual()
+    temp = recuperar_carteira_atual()
     codigos = temp["codigo"]
     cotacoes = []
 
@@ -23,10 +29,9 @@ def pegarCotacoes():
 
 
 sidebar = st.sidebar
-grafico = sidebar.selectbox(label='Opções',
-                            options=['Carteira Atual', 'Proventos'])
-negociacoes = databaseFunctions.recuperarNegociacao()
-proventos = databaseFunctions.recuperarProvento()
+grafico = sidebar.selectbox(label='Opções', options=['Carteira Atual', 'Proventos'])
+negociacoes = recuperar_negociacao()
+proventos = recuperar_provento()
 carteira_atual = pegarCotacoes()
 
 

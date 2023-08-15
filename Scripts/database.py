@@ -5,7 +5,7 @@ import pandas as pd
 import datetime
 
 
-def connectDB():
+def get_connection():
     try:
         connection = mysql.connector.connect(host='db',
                                              database='investimentos',
@@ -22,15 +22,14 @@ def connectDB():
         print('Erro while connecting to MySQL', e)
 
 
-def closeDB(connection, cursor):
-    if (connection.is_connected()):
+def close_connection(connection, cursor):
+    if connection.is_connected():
         cursor.close()
         connection.close()
 
 
-def novaNegociacao(categoria, data_negociacao, tipo, codigo, quantidade, preco):
-
-    # Pré processamento dos dados
+def nova_negociacao(categoria, data_negociacao, tipo, codigo, quantidade, preco):
+    # Pré-processamento dos dados
     if tipo == 'Compra':
         tipo = 'C'
     else:
@@ -40,7 +39,7 @@ def novaNegociacao(categoria, data_negociacao, tipo, codigo, quantidade, preco):
     preco = float(preco)
 
     # Lançando para o BD
-    connection, cursor = connectDB()
+    connection, cursor = get_connection()
     query =("INSERT INTO negociacao"
             "(categoria, data_negociacao, codigo, tipo, quantidade, preco, total)"
             "VALUES(%s, %s, %s, %s, %s, %s, %s)")
@@ -49,11 +48,11 @@ def novaNegociacao(categoria, data_negociacao, tipo, codigo, quantidade, preco):
     cursor.execute(query, data)
     connection.commit()
 
-    closeDB(connection, cursor)
+    close_connection(connection, cursor)
 
 
-def novoProvento(data_pagamento, codigo, tipo, quantidade_base, valor_bruto):
-    connection, cursor = connectDB()
+def novo_provento(data_pagamento, codigo, tipo, quantidade_base, valor_bruto):
+    connection, cursor = get_connection()
 
     query = ("INSERT INTO provento"
              "(data_pagamento, codigo, tipo, quantidade_base, valor_bruto)"
@@ -63,12 +62,12 @@ def novoProvento(data_pagamento, codigo, tipo, quantidade_base, valor_bruto):
     cursor.execute(query, data)
     connection.commit()
 
-    closeDB(connection, cursor)
+    close_connection(connection, cursor)
 
 
-def recuperarNegociacao():
-    connection, cursor = connectDB()
-    query = ("SELECT * FROM negociacao")
+def recuperar_negociacao():
+    connection, cursor = get_connection()
+    query = "SELECT * FROM negociacao"
     cursor.execute(query)
 
     rows = cursor.fetchall()
@@ -76,20 +75,20 @@ def recuperarNegociacao():
     df.columns = ['id_negociacao', 'categoria', 'data_negociacao',
                  'codigo', 'tipo', 'quantidade', 'valor_bruto', 'total']
 
-    closeDB(connection, cursor)
+    close_connection(connection, cursor)
     return df
 
 
-def recuperarProvento():
-    connection, cursor = connectDB()
-    query = ("SELECT * FROM provento")
+def recuperar_provento():
+    connection, cursor = get_connection()
+    query = "SELECT * FROM provento"
     cursor.execute(query)
 
     rows = cursor.fetchall()
     df = pd.DataFrame([[ij for ij in i] for i in rows])
     df.columns = ['id_provento','data_pagamento', 'codigo', 'tipo', 'quantidade_base', 'valor_bruto']
 
-    closeDB(connection, cursor)
+    close_connection(connection, cursor)
 
     #Mês pagamento
     df['data_pagamento'] = pd.to_datetime(df['data_pagamento'])
@@ -104,32 +103,32 @@ def recuperarProvento():
     return df
 
 
-def recuperarCarteiraAtual():
-    connection, cursor = connectDB()
-    query = ("SELECT * FROM carteira")
+def recuperar_carteira_atual():
+    connection, cursor = get_connection()
+    query = "SELECT * FROM carteira"
     cursor.execute(query)
 
     rows = cursor.fetchall()
     df = pd.DataFrame([[ij for ij in i] for i in rows])
     df.columns = ['codigo', 'categoria', 'quantidade']
 
-    closeDB(connection, cursor)
+    close_connection(connection, cursor)
     return df
 
 
-def excluirNegociacao(id_negociacao):
-    connection, cursor = connectDB()
+def excluir_negociacao(id_negociacao):
+    connection, cursor = get_connection()
 
     query = "DELETE FROM negociacao WHERE id_negociacao = %s;"
 
     cursor.execute(query, (id_negociacao,))
     connection.commit()
 
-    closeDB(connection, cursor)
+    close_connection(connection, cursor)
 
 
-def excluirProvento(id_provento):
-    connection, cursor = connectDB()
+def excluir_provento(id_provento):
+    connection, cursor = get_connection()
 
     query = "DELETE FROM provento WHERE id_provento = %s"
 
@@ -137,10 +136,10 @@ def excluirProvento(id_provento):
     cursor.execute(query, (id_provento,))
     connection.commit()
 
-    closeDB(connection, cursor)
+    close_connection(connection, cursor)
 
 
-def createTables():
+def create_tables():
     TABLES = {}
     TABLES['negociacao'] = (
         "CREATE TABLE `negociacao` ("
@@ -174,7 +173,7 @@ def createTables():
         "primary key(codigo));"
     )
 
-    connection, cursor = connectDB()
+    connection, cursor = get_connection()
 
     for table_name in TABLES:
         table_description = TABLES[table_name]
@@ -191,11 +190,11 @@ def createTables():
         else:
             print("OK")
 
-    closeDB(connection, cursor)
+    close_connection(connection, cursor)
 
 
-def triggerDeletarNegociacao():
-    connection, cursor = connectDB()
+def trigger_deletar_negociacao():
+    connection, cursor = get_connection()
 
     cursor.execute(" drop trigger if exists tg_apagar_negociacao;")
 
@@ -216,11 +215,11 @@ def triggerDeletarNegociacao():
 
     cursor.execute(query)
     connection.commit()
-    closeDB(connection, cursor)
+    close_connection(connection, cursor)
 
 
-def triggerNovaNegociação():
-    connection, cursor = connectDB()
+def trigger_nova_negociacao():
+    connection, cursor = get_connection()
 
     cursor.execute(" drop trigger if exists tg_nova_negociacao")
     query = (
@@ -244,5 +243,5 @@ def triggerNovaNegociação():
 
     cursor.execute(query)
     connection.commit()
-    closeDB(connection, cursor)
+    close_connection(connection, cursor)
 

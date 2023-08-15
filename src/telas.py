@@ -1,10 +1,14 @@
 import os
 
+from tkinter import ttk, messagebox
 import tkinter
-from tkinter import ttk
-from tkinter import messagebox
 
-import database as db_func
+from database import (
+    nova_negociacao,
+    novo_provento,
+    excluir_negociacao,
+    excluir_provento
+)
 
 
 if os.environ.get('DISPLAY','') == '':
@@ -30,7 +34,7 @@ def windows_add_negociacao():
         preco_entry.delete(0, len(preco))
         categoria_entry.delete(0, len(preco))
 
-        db_func.nova_negociacao(categoria, data_negociacao, tipo, codigo, quantidade, preco)
+        nova_negociacao(categoria, data_negociacao, tipo, codigo, quantidade, preco)
 
     root = tkinter.Tk()
     root.title("Nova Negociação")
@@ -105,7 +109,7 @@ def windows_add_provento():
         qtd_entry.delete(0, len(quantidade_base))
         valor_entry.delete(0, len(valor_bruto))
 
-        db_func.novo_provento(data_pagamento, codigo, tipo, quantidade_base, valor_bruto)
+        novo_provento(data_pagamento, codigo, tipo, quantidade_base, valor_bruto)
 
 
     root = tkinter.Tk()
@@ -164,7 +168,7 @@ def confirmar_exclusao_negociacao(id_negociacao):
 
     if msg_box == 'yes':
         try:
-            db_func.excluir_negociacao(id_negociacao)
+            excluir_negociacao(id_negociacao)
         except:
             _ = messagebox.showinfo('Erro na exclusão', 'Algo deu errado durante a operação :(')
         else:
@@ -186,7 +190,7 @@ def confirmar_exclusao_provento(id_provento):
 
     if msg_box == 'yes':
         try:
-            db_func.excluir_provento(id_provento)
+            excluir_provento(id_provento)
         except:
             _ = messagebox.showinfo('Erro na exclusão', 'Algo deu errado durante a operação :(')
         else:

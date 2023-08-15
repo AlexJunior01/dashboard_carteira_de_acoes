@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 8501
 
-CMD ["streamlit", "run", "web.py"]
+CMD ["streamlit", "run", "src/web.py"]

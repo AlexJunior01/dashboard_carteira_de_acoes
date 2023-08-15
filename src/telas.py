@@ -4,7 +4,7 @@ import tkinter
 from tkinter import ttk
 from tkinter import messagebox
 
-import Scripts.database as db_func
+import database as db_func
 
 
 if os.environ.get('DISPLAY','') == '':
@@ -42,8 +42,13 @@ def windows_add_negociacao():
     root.rowconfigure(0, weight=2)
 
     # Categoria
-    categorias = ['Ações', 'Fundos Imobiliários', 'BDRs',
-             'Tesouro Direto', 'Fundos de Investimentos']
+    categorias = [
+        'Ações',
+        'Fundos Imobiliários',
+        'BDRs',
+        'Tesouro Direto',
+        'Fundos de Investimentos'
+    ]
     categoria_entry = ttk.Combobox(frame, values=categorias)
     categoria_entry.grid(column=2, row=1, sticky=(tkinter.W, tkinter.E))
     ttk.Label(frame, text="Categoria").grid(column=1, row=1)

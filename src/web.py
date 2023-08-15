@@ -1,13 +1,14 @@
 import streamlit as st
 import yfinance as yf
 
-from Scripts.database import (
+from database import (
     recuperar_negociacao,
     recuperar_provento,
     recuperar_carteira_atual
 )
+from graficos import cria_grafico_proventos, cria_grafico_carteira_atual
+import telas
 
-from Scripts import telas, graficos
 
 @st.cache
 def pegar_cotacoes():
@@ -47,7 +48,7 @@ if grafico == 'Proventos':
     if btn_excluir_provento:
         telas.confirmar_exclusao_provento(excluir_provento)
 
-    grafico_provento = graficos.grafico_proventos(proventos)
+    grafico_provento = cria_grafico_proventos(proventos)
     st.plotly_chart(grafico_provento)
 
     if st.checkbox(label='Saw raw data'):
@@ -67,7 +68,7 @@ elif grafico == 'Carteira Atual':
         teste = int(input_excluir_negociacao)
         telas.confirmar_exclusao_negociacao(teste)
 
-    grafico_carteira = graficos.grafico_carteira_atual(carteira_atual)
+    grafico_carteira = cria_grafico_carteira_atual(carteira_atual)
     st.plotly_chart(grafico_carteira)
 
     if st.checkbox(label='See raw data'):

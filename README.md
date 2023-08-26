@@ -1,86 +1,69 @@
-[![author](https://img.shields.io/badge/author-AlexJunior-yellow.svg)](https://www.linkedin.com/in/alex-sandro-momi-junior-382bb8157/) [![](https://img.shields.io/badge/python-3.6-yellow.svg)](https://www.python.org/downloads/release/python-365/) [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-yellow.svg)](http://perso.crans.org/besson/LICENSE.html)
 
-# NOTICE:
-    Documentation is currently out of date, will be updated once the new version with MySQL is complete.
+# Dashboard Carteira de Investimento
 
-# Investment Portfolio Dashboard
-To gain a better understanding of my investments and make more assertive decisions, I created this Dashboard.
+## Conceito do projeto
+Esta é uma aplicação para o monitoramento de carteira de investimentos, que possuam ativos em diversas corretoras,
+em um único. Ela fornece uma visão geral da distribuição do portfólio, da receita recebida e do crescimento do patrimônio.
 
-This Dashboard is a platform for monitoring my investment portfolio, which comprises assets in several brokerages,
-all in one place. It provides an overview of portfolio distribution, income received, and equity growth.
+## Pré-requisitos e recursos utilizados
+Para o desenvolvimento do dashboard foi utilizado Python e MySQL como tecnologias principais. Além de utilizar as
+seguintes bibliotecas:
 
-## Features:
-### Current Portfolio Distribution
-The first feature of the Dashboard is to simply and objectively show the current distribution of the investment portfolio.
-It shows the distribution from two different optics:
+* `seaborn` e `plotly`: para criação dos gráficos;
+* `yfinance`: para buscar as informações sobre os ativos;
+* `pandas`: para organizar as informações recuperadas pelo script de webscrap;
+* `streamlit`; para criação do Data App.
 
-* **By Asset:** Showcasing each asset's share in your portfolio, offering a view of where your largest positions are
-concentrated.
+## Instalação e Execução
+Para conseguir executar o projeto é preciso ter o Docker e docker-compose V2 instalados. Após instalar ambos é só executar
+os comandos abaixo:
+
+```shell
+# Construi as imagens
+docker compose build
+
+# Inicia os serviçoes
+docker compose up
+```
+
+Após esses comandos o serviço será iniciado, utilizando a porta 8051 para a aplicação e 3306 para o banco de dados MySQL.
+
+OBS: Os comandos acima estão considerando a utilização do docker compose V2. Caso você tenha instalado primeira versão
+é só utilizar os comando com `docker-compose ...` ao invés de `docker compose ...`.
+
+## Funcionalidades
+### Distribuição Atual da Carteira
+A primeira funcionalidade do Dashboard é mostrar, de maneira simples e objetiva, a distribuição atual do portfólio de investimentos.
+A distribuição é exibida por duas óticas distintas:
+
+* **Por Ativo:** Apresenta a participação de cada ativo na sua carteira, oferecendo uma visão de onde estão concentradas suas maiores posições.
 <img src="img/carteira_atual_por_acao.png">
 
-* **By asset class:** Displaying the distribution of the portfolio across asset classes, which aids in better analysis
-of your investment strategy.
+* **Por Classe de Ativo:** Exibe a distribuição do portfólio por classes de ativo, auxiliando na melhor análise
+da sua estratégia de investimento.
 <img src="img/carteira_atual_por_classe.png">
 
-### Returns
-Returns are a vital aspect of investing, particularly for long-term investors seeking a steady flow of passive income.
-To facilitate an effective monitoring of these returns, the Dashboard features two distinct charts.
+### Rendimentos
+Os rendimentos são um aspecto vital do investimento, especialmente para investidores de longo prazo que buscam um fluxo constante de renda passiva.
+Para facilitar um monitoramento eficaz desses rendimentos, o Dashboard apresenta dois gráficos distintos.
 
-The first chart presents the monthly returns, collating the income received every month and providing detailed
-information about each disbursement, including the date and the nature of the income. The second chart aggregates
-the returns from each asset, illustrating the total earnings received since the time of purchase.
+O primeiro gráfico apresenta os rendimentos mensais, compilando a renda recebida a cada mês e fornecendo informações detalhadas
+sobre cada desembolso, incluindo a data e a natureza da receita. O segundo gráfico agrega
+os rendimentos de cada ativo, ilustrando os ganhos totais recebidos desde o momento da compra.
 
-#### Monthly Returns
+#### Rendimentos Mensais
 <img src="img/rendimentos_mensais.png">
 
-#### Returns by asset
+#### Rendimentos por Ativo
 <img src="img/rendimentos_por_ativo.png">
 
-
-### Equity growth
-Finally, but no less important, the wealth accumulation graph offers a concise perspective on your **capital investments**
-and their **gross value** as they evolve over time. Despite its simplicity, this chart can effectively illustrate the
-impact of your investment decisions, thereby inspiring you to either maintain your course or reconsider your strategy.
+### Crescimento do Patrimônio
+Por fim, mas não menos importante, o gráfico de acumulação de patrimio oferece uma perspectiva concisa sobre seus **investimentos**
+e seu **valor bruto** conforme eles evoluem ao longo do tempo.
 <img src="img/crescimento_patrimonial.png">
 
-## Obtenção dos dados:
-1. **Trades** and **current portfolio**: both were obtained from the [CEI](https://cei.b3.com.br/CEI_Responsivo/)
-using the scraping algorithm atualizar_dados.py available in the repository;
+## Autores
 
-2. **Quotes**: they were obtained using the `pandas datareader` library and using _Yahoo Finance_ as the search channel;
-
-3. **Yields**: this is a table that I have had since I started investing, which I update whenever there's a new yield.
-I've always used it to stay focused and continue investing.
-
-
-## Notes:
-* **Does not support all types of investments**: as shown in the images above, my investments are in the early stages,
-holding very few assets and from only two classes. Therefore, I do not have access to how other types of assets are
-displayed on the CEI;
-
-* **Contributions:** contributions are **7000% welcome** This is my first project involving _web scraping_ and
-_dashboards_, and I imagine you can tell by looking at the project. I would be super happy if you wanted to contribute
-* to the project with more efficient algorithms, better architecture, a new feature or support for a type of asset,
-* or any changes you think would make the project better.
-
-
-## How to use:
-
-1. The `requisitos.txt` file contains the installed libraries and their respective versions;
-2. Have Chrome and the Chrome webdriver in the root folder of the project([link to get the webdriver](https://chromedriver.chromium.org/));
-3. Input your CPF and password into the `cei_scrap.py` script;
-<img src="img/login_cei.png">
-
-4. Run the `atualizar_dados.py` script and wait for data acquisition;
-    >`python atualizar_dados.py`
-
-    * The yield table is not created in this script; you can use the model that is in the repository and input your values.
-
-5. Run the Dashboard.
-    >`streamlit run dashboard.py`
-
-
-## Next Steps:
-* Improve the quality of the charts and display more relevant information in them;
-* Add the option to insert new trades and yields through the dashboard;
-* Create a button to update the data by fetching information from the CEI.
+| Nome do Autor           | LinkedIn                                                   | GitHub                                          |
+|-------------------------|------------------------------------------------------------|-------------------------------------------------|
+| Alex Sandro Momi Junior | [Alex Junior](https://www.linkedin.com/in/alexmomijunior/) | [AlexJunior01](https://github.com/AlexJunior01) |

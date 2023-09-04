@@ -7,7 +7,12 @@ from database import (
     recuperar_carteira_atual,
 )
 import database
-from graficos import cria_grafico_proventos, cria_grafico_carteira_atual
+from graficos import (
+    cria_grafico_proventos,
+    cria_grafico_carteira_atual_por_ativo,
+    cria_grafico_carteira_atual_por_tipo,
+    cria_grafico_rendimento_por_ativo
+)
 import telas
 
 
@@ -40,8 +45,7 @@ proventos = recuperar_provento()
 carteira_atual = pegar_cotacoes()
 
 if grafico == 'Proventos':
-    st.title('Rendimentos Mensais')
-
+    st.title('Proventos')
     novo_provento = sidebar.button('Adicionar Provento')
     if novo_provento:
         telas.windows_add_provento()
@@ -51,8 +55,14 @@ if grafico == 'Proventos':
     if btn_excluir_provento:
         telas.confirmar_exclusao_provento(excluir_provento)
 
+
     if not proventos.empty:
+        st.write('Proventos mensais')
         grafico_provento = cria_grafico_proventos(proventos)
+        st.plotly_chart(grafico_provento)
+
+        st.write('Proventos mensais')
+        grafico_provento = cria_grafico_rendimento_por_ativo(proventos)
         st.plotly_chart(grafico_provento)
 
     if st.checkbox(label='Saw raw data'):
@@ -71,9 +81,16 @@ elif grafico == 'Carteira Atual':
         teste = int(input_excluir_negociacao)
         telas.confirmar_exclusao_negociacao(teste)
 
-    if not carteira_atual.empty:
-        grafico_carteira = cria_grafico_carteira_atual(carteira_atual)
-        st.plotly_chart(grafico_carteira)
+    tipo_carteira_atual = st.selectbox(label='Selecione', options=['Por ação', 'Por classe de ativo'])
+
+    if tipo_carteira_atual == 'Por ação':
+        if not carteira_atual.empty:
+            grafico_carteira = cria_grafico_carteira_atual_por_ativo(carteira_atual)
+            st.plotly_chart(grafico_carteira)
+    else:
+        if not carteira_atual.empty:
+            grafico_carteira = cria_grafico_carteira_atual_por_tipo(carteira_atual)
+            st.plotly_chart(grafico_carteira)
 
     if st.checkbox(label='See raw data'):
         st.write(carteira_atual)

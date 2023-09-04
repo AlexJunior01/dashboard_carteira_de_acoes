@@ -4,8 +4,9 @@ import yfinance as yf
 from database import (
     recuperar_negociacao,
     recuperar_provento,
-    recuperar_carteira_atual
+    recuperar_carteira_atual,
 )
+import database
 from graficos import cria_grafico_proventos, cria_grafico_carteira_atual
 import telas
 
@@ -13,11 +14,15 @@ import telas
 @st.cache
 def pegar_cotacoes():
     temp = recuperar_carteira_atual()
+
+    if temp.empty:
+        return temp
+
     codigos = temp["codigo"]
     cotacoes = []
 
     for codigo in codigos:
-        codigo = codigo+'.SA'
+        codigo = codigo + '.SA'
         cota = yf.Ticker(codigo)
         ultima_cotacao = cota.history(period='day')["Close"]
         cotacoes.append(ultima_cotacao[0])
@@ -29,11 +34,10 @@ def pegar_cotacoes():
 
 
 sidebar = st.sidebar
-grafico = sidebar.selectbox(label='Opções', options=['Carteira Atual', 'Proventos'])
+grafico = sidebar.selectbox(label='Opções', options=['Carteira Atual', 'Proventos', 'Negociacoes'])
 negociacoes = recuperar_negociacao()
 proventos = recuperar_provento()
 carteira_atual = pegar_cotacoes()
-
 
 if grafico == 'Proventos':
     st.title('Rendimentos Mensais')
@@ -42,14 +46,14 @@ if grafico == 'Proventos':
     if novo_provento:
         telas.windows_add_provento()
 
-    excluir_provento = sidebar.number_input('Id do provento', value=0,
-                                             step=1)
+    excluir_provento = sidebar.number_input('Id do provento', value=0, step=1)
     btn_excluir_provento = sidebar.button('Excluir Provento')
     if btn_excluir_provento:
         telas.confirmar_exclusao_provento(excluir_provento)
 
-    grafico_provento = cria_grafico_proventos(proventos)
-    st.plotly_chart(grafico_provento)
+    if not proventos.empty:
+        grafico_provento = cria_grafico_proventos(proventos)
+        st.plotly_chart(grafico_provento)
 
     if st.checkbox(label='Saw raw data'):
         st.write(proventos)
@@ -61,17 +65,18 @@ elif grafico == 'Carteira Atual':
     if nova_negociacao:
         telas.windows_add_negociacao()
 
-    input_excluir_negociacao = sidebar.number_input('Id da negociacao', value=0,
-                                             step=1)
+    input_excluir_negociacao = sidebar.number_input('Id da negociacao', value=0, step=1)
     btn_excluir_negociacao = sidebar.button('Excluir Negociacao')
     if btn_excluir_negociacao:
         teste = int(input_excluir_negociacao)
         telas.confirmar_exclusao_negociacao(teste)
 
-    grafico_carteira = cria_grafico_carteira_atual(carteira_atual)
-    st.plotly_chart(grafico_carteira)
+    if not carteira_atual.empty:
+        grafico_carteira = cria_grafico_carteira_atual(carteira_atual)
+        st.plotly_chart(grafico_carteira)
 
     if st.checkbox(label='See raw data'):
         st.write(carteira_atual)
+
 
 

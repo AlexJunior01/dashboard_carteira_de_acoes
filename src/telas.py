@@ -10,13 +10,11 @@ from database import (
     excluir_provento
 )
 
-
-if os.environ.get('DISPLAY','') == '':
+if os.environ.get('DISPLAY', '') == '':
     os.environ.__setitem__('DISPLAY', ':0.0')
 
 
 def windows_add_negociacao():
-
     def pegar_negociacao():
         data_negociacao = data_entry.get()
         tipo = tipo_entry.get()
@@ -56,7 +54,6 @@ def windows_add_negociacao():
     categoria_entry = ttk.Combobox(frame, values=categorias)
     categoria_entry.grid(column=2, row=1, sticky=(tkinter.W, tkinter.E))
     ttk.Label(frame, text="Categoria").grid(column=1, row=1)
-
 
     # Data
     data_entry = tkinter.Entry(frame, width=15)
@@ -111,7 +108,6 @@ def windows_add_provento():
 
         novo_provento(data_pagamento, codigo, tipo, quantidade_base, valor_bruto)
 
-
     root = tkinter.Tk()
     root.title("Novo Provento")
     root.geometry("500x300")
@@ -131,12 +127,10 @@ def windows_add_provento():
     cod_entry.grid(column=2, row=2, sticky=(tkinter.W, tkinter.E))
     ttk.Label(frame, text="Código").grid(column=1, row=2)
 
-
     # Tipo
     tipo_entry = tkinter.Entry(frame, width=15)
     tipo_entry.grid(column=2, row=3, sticky=(tkinter.W, tkinter.E))
     ttk.Label(frame, text="Tipo").grid(column=1, row=3)
-
 
     # Quantidade Base
     qtd_entry = tkinter.Entry(frame, width=15)
@@ -147,7 +141,6 @@ def windows_add_provento():
     valor_entry = tkinter.Entry(frame, width=15)
     valor_entry.grid(column=2, row=5, sticky=(tkinter.W, tkinter.E))
     ttk.Label(frame, text="Valor").grid(column=1, row=5)
-
 
     # Adicionar no BD
     btn = ttk.Button(frame, text='Adicionar', command=pegar_provento)
@@ -173,7 +166,7 @@ def confirmar_exclusao_negociacao(id_negociacao):
             _ = messagebox.showinfo('Erro na exclusão', 'Algo deu errado durante a operação :(')
         else:
             _ = messagebox.showinfo('Negociação removida',
-                                f'A negociacao {id_negociacao} foi removida com sucesso')
+                                    f'A negociacao {id_negociacao} foi removida com sucesso')
         finally:
             root.destroy()
     else:
@@ -195,7 +188,7 @@ def confirmar_exclusao_provento(id_provento):
             _ = messagebox.showinfo('Erro na exclusão', 'Algo deu errado durante a operação :(')
         else:
             _ = messagebox.showinfo('Provento removido',
-                                f'A provento {id_provento} foi removida com sucesso')
+                                    f'A provento {id_provento} foi removida com sucesso')
         finally:
             root.destroy()
     else:

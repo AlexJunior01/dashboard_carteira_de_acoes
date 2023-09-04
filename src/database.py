@@ -7,7 +7,7 @@ import pandas as pd
 
 def get_connection():
     try:
-        connection = mysql.connector.connect(host='db',
+        connection = mysql.connector.connect(host='localhost',
                                              database='investimentos',
                                              user='root',
                                              password='test')
@@ -40,10 +40,10 @@ def nova_negociacao(categoria, data_negociacao, tipo, codigo, quantidade, preco)
 
     # Lançando para o BD
     connection, cursor = get_connection()
-    query =("INSERT INTO negociacao"
-            "(categoria, data_negociacao, codigo, tipo, quantidade, preco, total)"
-            "VALUES(%s, %s, %s, %s, %s, %s, %s)")
-    data = (categoria, data_negociacao, codigo, tipo, quantidade, preco, quantidade*preco)
+    query = ("INSERT INTO negociacao"
+             "(categoria, data_negociacao, codigo, tipo, quantidade, preco, total)"
+             "VALUES(%s, %s, %s, %s, %s, %s, %s)")
+    data = (categoria, data_negociacao, codigo, tipo, quantidade, preco, quantidade * preco)
 
     cursor.execute(query, data)
     connection.commit()
@@ -66,17 +66,22 @@ def novo_provento(data_pagamento, codigo, tipo, quantidade_base, valor_bruto):
 
 
 def recuperar_negociacao():
-    connection, cursor = get_connection()
-    query = "SELECT * FROM negociacao"
-    cursor.execute(query)
+    try:
+        connection, cursor = get_connection()
+        query = "SELECT * FROM negociacao"
+        cursor.execute(query)
 
-    rows = cursor.fetchall()
-    df = pd.DataFrame([[ij for ij in i] for i in rows])
-    df.columns = ['id_negociacao', 'categoria', 'data_negociacao',
-                 'codigo', 'tipo', 'quantidade', 'valor_bruto', 'total']
+        rows = cursor.fetchall()
+        if not rows:
+            return pd.DataFrame()
 
-    close_connection(connection, cursor)
-    return df
+        df = pd.DataFrame([[ij for ij in i] for i in rows])
+        df.columns = ['id_negociacao', 'categoria', 'data_negociacao',
+                      'codigo', 'tipo', 'quantidade', 'valor_bruto', 'total']
+
+        return df
+    except Exception as exc:
+        return pd.DataFrame()
 
 
 def recuperar_provento():
@@ -85,20 +90,23 @@ def recuperar_provento():
     cursor.execute(query)
 
     rows = cursor.fetchall()
+    if not rows:
+        return pd.DataFrame()
+
     df = pd.DataFrame([[ij for ij in i] for i in rows])
-    df.columns = ['id_provento','data_pagamento', 'codigo', 'tipo', 'quantidade_base', 'valor_bruto']
+    df.columns = ['id_provento', 'data_pagamento', 'codigo', 'tipo', 'quantidade_base', 'valor_bruto']
 
     close_connection(connection, cursor)
 
-    #Mês pagamento
+    # Mês pagamento
     df['data_pagamento'] = pd.to_datetime(df['data_pagamento'])
     mes_pag = []
-    for data in  df['data_pagamento']:
+    for data in df['data_pagamento']:
         mes = datetime.datetime(data.year, data.month, 1)
         mes_pag.append(mes)
     df['mes_pagamento'] = mes_pag
 
-    #Conversão dos tipos
+    # Conversão dos tipos
     df['valor_bruto'] = df['valor_bruto'].astype(str).astype(float)
     return df
 
@@ -109,6 +117,9 @@ def recuperar_carteira_atual():
     cursor.execute(query)
 
     rows = cursor.fetchall()
+    if not rows:
+        return pd.DataFrame()
+
     df = pd.DataFrame([[ij for ij in i] for i in rows])
     df.columns = ['codigo', 'categoria', 'quantidade']
 
@@ -131,7 +142,6 @@ def excluir_provento(id_provento):
     connection, cursor = get_connection()
 
     query = "DELETE FROM provento WHERE id_provento = %s"
-
 
     cursor.execute(query, (id_provento,))
     connection.commit()
@@ -167,7 +177,7 @@ def create_tables():
 
     TABLES['carteira'] = (
         "CREATE TABLE `carteira` ("
-	    "`codigo` varchar(10) not null,"
+        "`codigo` varchar(10) not null,"
         "`categoria` varchar(20) not null,"
         "`quantidade` float,"
         "primary key(codigo));"
@@ -199,7 +209,7 @@ def trigger_deletar_negociacao():
     cursor.execute(" drop trigger if exists tg_apagar_negociacao;")
 
     query = (
-    """CREATE TRIGGER tg_apagar_negociacao BEFORE DELETE ON negociacao
+        """CREATE TRIGGER tg_apagar_negociacao BEFORE DELETE ON negociacao
 	FOR EACH ROW
 	BEGIN
 		IF OLD.tipo = 'C' THEN
@@ -223,7 +233,7 @@ def trigger_nova_negociacao():
 
     cursor.execute(" drop trigger if exists tg_nova_negociacao")
     query = (
-    """CREATE TRIGGER tg_nova_negociacao AFTER INSERT ON negociacao
+        """CREATE TRIGGER tg_nova_negociacao AFTER INSERT ON negociacao
 	FOR EACH ROW
 	BEGIN
 		IF (SELECT codigo FROM carteira WHERE codigo = NEW.codigo) IS NULL THEN
@@ -245,3 +255,8 @@ def trigger_nova_negociacao():
     connection.commit()
     close_connection(connection, cursor)
 
+
+if __name__ == '__main__':
+    create_tables()
+    trigger_nova_negociacao()
+    trigger_deletar_negociacao()
